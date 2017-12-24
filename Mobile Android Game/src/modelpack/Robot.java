@@ -52,13 +52,13 @@ public class Robot {
 
 		// Moves Character or Scrolls Background accordingly.
 		if (speedX < 0) {
-			centerX += speedX;
+			centerX += speedX;// this changes center X by adding speedX.
 		} else if (speedX == 0) {
 			System.out.println("Do not scroll the background.");
 
 		} else {
-			if (centerX <= 150) {
-				centerX += speedX;
+			if (centerX <= 150) {//if the character's center X is in the left 150 pixels
+				centerX += speedX;//Changes centerX by adding speedX
 			} else {
 				System.out.println("Scroll Background Here");
 			}
@@ -66,14 +66,15 @@ public class Robot {
 		// Updates Y Position. 382 is where the character's centerY would be if he were 
 		//standing on the ground.
 		if (centerY + speedY >= 382) {
-			centerY = 382;
-		}else{                       
-			centerY += speedY;
+			centerY = 382;}
+		else{                       
+			centerY += speedY;//changes y value
 		}
 		// Handles Jumping
 		if (jumped == true) {
-			speedY += 1;
-
+			speedY += 1;// makes the character seem like they are jumping
+			//382 is the y value that would represent walking on the ground
+			//NOTE: This will bring the character downwards
 			if (centerY + speedY >= 382) {
 				centerY = 382;
 				speedY = 0;
@@ -87,18 +88,26 @@ public class Robot {
 			centerX = 61;
 		}
 	}
+	
+	//changes the speedX value so the coordinate of the value can
+	//change. It changes the x value of the coordinate
 	public void moveRight() {
 		speedX = 6;
 	}
-
+	
+	//changes the speedX value so the coordinate of the value can
+	//change. It changes the x value of the coordinate
 	public void moveLeft() {
 		speedX = -6;
 	}
-
+	
+	//changes the speedX value so the coordinate of the value can
+	//change. It changes the x value of the coordinate
 	public void stop() {
 		speedX = 0;
 	}
-
+	//changes the speedY value so the coordinate of the value can
+	//change. It changes the Y value of the coordinate
 	public void jump() {
 		if (jumped == false) {
 			speedY = -15;

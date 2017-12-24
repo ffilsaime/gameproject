@@ -33,7 +33,7 @@ public class BackgroundClass {
 		return _bgY;
 	}
 
-	public int get_speedX() {
+	public int getSpeedX() {
 		return _speedX;
 	}
 
@@ -45,7 +45,7 @@ public class BackgroundClass {
 		this._bgY = _bgY;
 	}
 
-	public void set_speedX(int _speedX) {
+	public void setSpeedX(int _speedX) {
 		this._speedX = _speedX;
 	}
 	
