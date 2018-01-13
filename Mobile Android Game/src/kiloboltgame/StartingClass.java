@@ -1,7 +1,6 @@
 package kiloboltgame;
 
 import java.applet.Applet;
-
 import modelpack.BackgroundClass;
 import modelpack.Robot;
 import java.awt.Color;
@@ -14,7 +13,7 @@ import java.awt.Image;
 
 public class StartingClass extends Applet implements Runnable, KeyListener{
 	private Robot _robot;
-	private Image image, character, background;
+	private Image image, character, background, currentSprite, characterDown, characterJumped;
 	private Graphics second;
 	private URL base;
 	private static BackgroundClass _bg1, _bg2;
@@ -32,8 +31,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 	public void init() {
 		setSize(800, 480);
 		setBackground(Color.BLACK);
-		setFocusable(true); //when the game starts, the applet focuses and uses the 
-		//user input
+		setFocusable(true); //when the game starts, the applet focuses and uses the user input
 		addKeyListener(this);
 		Frame frame = (Frame) this.getParent().getParent();
 		frame.setTitle("Q-Bot Alpha");
@@ -43,6 +41,9 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 			//TODO: handle exception
 		}
 		character = getImage(base, "data/character.png");
+		characterDown = getImage(base, "data/down.png");
+		characterJumped = getImage(base, "data/jumped.png");
+		currentSprite = character; 
 		background = getImage(base,"data/background.png");
 	}
 
@@ -70,13 +71,19 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 	}
 	/**
 	 * This method is to make the game loop. This will make it run
-	 * forever
+	 * forever. This will also check the state of the robot and make changes
+	 * to the sprite
 	 * @author flore
 	 */
 	@Override
 	public void run() {
 		while(true){
 			_robot.update();
+		if(_robot.isJumped()){
+			currentSprite = characterJumped;
+		}else if(_robot.isJumped()== false && _robot.isDucked()==false){
+			currentSprite = character;
+		}
 			_bg1.update();
 			_bg2.update();
 			repaint();// this calls paint
@@ -110,9 +117,9 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 	}
 
 	public void paint(Graphics g){
-		g.drawImage(character,_robot.getCenterX()-61, _robot.getCenterY(), this);
 		g.drawImage(background, _bg1.get_bgX(), _bg1.get_bgY(), this);
 		g.drawImage(background, _bg2.get_bgX(), _bg2.get_bgY(), this);
+		g.drawImage(currentSprite,_robot.getCenterX()-61, _robot.getCenterY()-63, this);
 	}
 
 	/**
@@ -126,17 +133,28 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 			System.out.println("Move up");
 			// Constant for the up arrow key
 			break;
+			
 		case KeyEvent.VK_DOWN:
+			currentSprite = characterDown;
+			if(_robot.isJumped()==false){
+				_robot.setDucked(true);
+				_robot.setSpeedX(0);
+			}
 			System.out.println("Move down");
 			break;
+			
 		case KeyEvent.VK_LEFT:
 			_robot.moveLeft();
+			_robot.setMovingLeft(true);
 			System.out.println("Move left");
 			break;
+			
 		case KeyEvent.VK_RIGHT:
 			_robot.moveRight();
+			_robot.setMovingRight(true);
 			System.out.println("Move right");
 			break;
+			
 		case KeyEvent.VK_SPACE:
 			_robot.jump();
 			System.out.println("Jump");
@@ -149,17 +167,24 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 	public void keyReleased(KeyEvent arg0) {
 		switch(arg0.getKeyCode()){
 		case KeyEvent.VK_UP: // Constant for the up arrow key
+			System.out.println("Stop moving up");
 			break;
+			
 		case KeyEvent.VK_DOWN:
+			currentSprite = character;
+			_robot.setDucked(false);
 			break;
+			
 		case KeyEvent.VK_LEFT:
-			_robot.stop();
+			_robot.stopLeft();
 			System.out.println("Stop moving left");
 			break;
+			
 		case KeyEvent.VK_RIGHT:
-			_robot.stop();
+			_robot.stopRight();
 			System.out.println("Stop moving right");
 			break;
+			
 		case KeyEvent.VK_SPACE:
 			break;
 		}
@@ -170,6 +195,14 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	public static BackgroundClass getBg1(){
+		return _bg1;
+	}
+	
+	public static BackgroundClass getBg2(){
+		return _bg2;
 	}
 
 }
