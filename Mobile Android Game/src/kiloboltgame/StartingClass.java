@@ -13,11 +13,12 @@ import java.awt.Image;
 
 public class StartingClass extends Applet implements Runnable, KeyListener{
 	private Robot _robot;
-	private Image image, character, background, currentSprite, characterDown, characterJumped;
+	private Heliboy hb, hb2;
+	private Image image, character, background, currentSprite, characterDown, characterJumped, heliboy;
 	private Graphics second;
 	private URL base;
 	private static BackgroundClass _bg1, _bg2;
-	
+
 	public StartingClass(){
 
 	}
@@ -45,14 +46,19 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 		characterJumped = getImage(base, "data/jumped.png");
 		currentSprite = character; 
 		background = getImage(base,"data/background.png");
+		heliboy = getImage(base,"data/heliboy.png");
 	}
-
+	/**
+	 * The background, enemies and main character are being
+	 * created.
+	 * @author flore
+	 */
 	@Override
 	public void start() {
-		//the background objects will be given x and y coordinates
-		// so the objects won't be null
 		_bg1 = new BackgroundClass(0,0);
 		_bg2 = new BackgroundClass(2160,0);
+		hb = new Heliboy(340, 360);
+		hb2 = new Heliboy(700, 360);
 		_robot = new Robot();
 		Thread thread = new Thread(this);
 		thread.start();
@@ -79,11 +85,13 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 	public void run() {
 		while(true){
 			_robot.update();
-		if(_robot.isJumped()){
-			currentSprite = characterJumped;
-		}else if(_robot.isJumped()== false && _robot.isDucked()==false){
-			currentSprite = character;
-		}
+			if(_robot.isJumped()){
+				currentSprite = characterJumped;
+			}else if(_robot.isJumped()== false && _robot.isDucked()==false){
+				currentSprite = character;
+			}
+			hb.update();
+			hb2.update();
 			_bg1.update();
 			_bg2.update();
 			repaint();// this calls paint
@@ -120,6 +128,8 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 		g.drawImage(background, _bg1.get_bgX(), _bg1.get_bgY(), this);
 		g.drawImage(background, _bg2.get_bgX(), _bg2.get_bgY(), this);
 		g.drawImage(currentSprite,_robot.getCenterX()-61, _robot.getCenterY()-63, this);
+		g.drawImage(heliboy, hb.getCenterX()-48, hb.getCenterY()-48, this);
+		g.drawImage(heliboy, hb2.getCenterX()-48, hb2.getCenterY()-48, this);
 	}
 
 	/**
@@ -133,7 +143,7 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 			System.out.println("Move up");
 			// Constant for the up arrow key
 			break;
-			
+
 		case KeyEvent.VK_DOWN:
 			currentSprite = characterDown;
 			if(_robot.isJumped()==false){
@@ -142,19 +152,19 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 			}
 			System.out.println("Move down");
 			break;
-			
+
 		case KeyEvent.VK_LEFT:
 			_robot.moveLeft();
 			_robot.setMovingLeft(true);
 			System.out.println("Move left");
 			break;
-			
+
 		case KeyEvent.VK_RIGHT:
 			_robot.moveRight();
 			_robot.setMovingRight(true);
 			System.out.println("Move right");
 			break;
-			
+
 		case KeyEvent.VK_SPACE:
 			_robot.jump();
 			System.out.println("Jump");
@@ -169,22 +179,22 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 		case KeyEvent.VK_UP: // Constant for the up arrow key
 			System.out.println("Stop moving up");
 			break;
-			
+
 		case KeyEvent.VK_DOWN:
 			currentSprite = character;
 			_robot.setDucked(false);
 			break;
-			
+
 		case KeyEvent.VK_LEFT:
 			_robot.stopLeft();
 			System.out.println("Stop moving left");
 			break;
-			
+
 		case KeyEvent.VK_RIGHT:
 			_robot.stopRight();
 			System.out.println("Stop moving right");
 			break;
-			
+
 		case KeyEvent.VK_SPACE:
 			break;
 		}
@@ -196,11 +206,11 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	public static BackgroundClass getBg1(){
 		return _bg1;
 	}
-	
+
 	public static BackgroundClass getBg2(){
 		return _bg2;
 	}
