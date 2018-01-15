@@ -8,6 +8,7 @@ import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
+import java.util.ArrayList;
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -90,6 +91,17 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 			}else if(_robot.isJumped()== false && _robot.isDucked()==false){
 				currentSprite = character;
 			}
+			
+			ArrayList projectiles = _robot.getProjectiles();
+			for(int i = 0; i<projectiles.size();i++){
+				Projectile p = (Projectile) prokectiles.get(i);
+				if(p.isVisible()==true){
+					p.update();
+				}else{
+					projectiles.remove(i);
+				}
+			}
+			
 			hb.update();
 			hb2.update();
 			_bg1.update();
@@ -127,6 +139,14 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 	public void paint(Graphics g){
 		g.drawImage(background, _bg1.get_bgX(), _bg1.get_bgY(), this);
 		g.drawImage(background, _bg2.get_bgX(), _bg2.get_bgY(), this);
+		
+		ArrayList projectiles = _robot.getProjectiles();
+		for (int i= 0; i<projectiles.size(); i++){
+			Projectile p = (Projectile)projectiles.get(i);
+			g.setColor(Color.YELLOW);
+			g.fillRect(p.getX(),p.getY(), 10, 5);
+		}
+		
 		g.drawImage(currentSprite,_robot.getCenterX()-61, _robot.getCenterY()-63, this);
 		g.drawImage(heliboy, hb.getCenterX()-48, hb.getCenterY()-48, this);
 		g.drawImage(heliboy, hb2.getCenterX()-48, hb2.getCenterY()-48, this);
@@ -150,27 +170,27 @@ public class StartingClass extends Applet implements Runnable, KeyListener{
 				_robot.setDucked(true);
 				_robot.setSpeedX(0);
 			}
-			System.out.println("Move down");
 			break;
 
 		case KeyEvent.VK_LEFT:
 			_robot.moveLeft();
 			_robot.setMovingLeft(true);
-			System.out.println("Move left");
 			break;
 
 		case KeyEvent.VK_RIGHT:
 			_robot.moveRight();
 			_robot.setMovingRight(true);
-			System.out.println("Move right");
 			break;
 
 		case KeyEvent.VK_SPACE:
 			_robot.jump();
-			System.out.println("Jump");
 			break;
-		}
-
+		
+		case KeyEvent.VK_CONTROL:
+			if(_robot.isDucked()==false&& _robot.isJumped()==false){
+				_robot.shoot();
+			}
+			break; }
 	}
 
 	@Override

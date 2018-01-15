@@ -7,7 +7,9 @@ package modelpack;
  *
  */
 import java.awt.Graphics;
+import java.util.ArrayList;
 
+import kiloboltgame.Projectile;
 import kiloboltgame.StartingClass;
 
 public class Robot {
@@ -27,6 +29,8 @@ public class Robot {
 	private static BackgroundClass bg2 = StartingClass.getBg2();
 	private int speedX = 0; // the rate at which the x position changes
 	private int speedY = 1; // the rate at which the y position changes
+	
+	private ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 
 	public void update() {
 
@@ -115,6 +119,11 @@ public class Robot {
 
 	}
 	
+	public void shoot(){
+		Projectile p = new Projectile(centerX + 50, centerY - 25); 
+		projectiles.add(p);
+	}
+	
 	public int getCenterX() {
 		return centerX;
 	}
@@ -158,4 +167,7 @@ public class Robot {
 		this.ducked = ducked;
 	}
 	
+	public ArrayList getProjectiles(){
+		return projectiles;
+	}
 }
